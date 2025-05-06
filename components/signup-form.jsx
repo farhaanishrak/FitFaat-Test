@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "./auth-provider"
 import Link from "next/link"
 import Image from "next/image"
@@ -21,10 +21,13 @@ export function SignupForm() {
   const { signup } = useAuth()
   const [theme, setTheme] = useState("dark")
 
-  // Check theme
-  useState(() => {
-    const savedTheme = localStorage.getItem("theme") || "dark"
-    setTheme(savedTheme)
+  // Check theme only on client-side
+  useEffect(() => {
+    // Only access localStorage in the browser
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme") || "dark"
+      setTheme(savedTheme)
+    }
   }, [])
 
   const handleSubmit = async (e) => {

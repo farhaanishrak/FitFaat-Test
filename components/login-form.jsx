@@ -25,9 +25,11 @@ export function LoginForm() {
       setError(`Authentication system error: ${authError}. Using demo mode.`)
     }
 
-    // Check theme
-    const savedTheme = localStorage.getItem("theme") || "dark"
-    setTheme(savedTheme)
+    // Check theme only on client-side
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme") || "dark"
+      setTheme(savedTheme)
+    }
   }, [authError])
 
   const handleSubmit = async (e) => {

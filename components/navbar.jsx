@@ -66,9 +66,11 @@ export function Navbar() {
       { id: 2, name: "Resistance Bands Set", price: 24.99, quantity: 2, image: "/placeholder.svg?height=80&width=80" },
     ])
 
-    // Check theme
-    const savedTheme = localStorage.getItem("theme") || "dark"
-    setTheme(savedTheme)
+    // Check theme only on client-side
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme") || "dark"
+      setTheme(savedTheme)
+    }
   }, [])
 
   const removeFromCart = (id) => {
