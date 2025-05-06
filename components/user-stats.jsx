@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/components/auth-provider"
 import { getWeightLogs, addWeightLog, getStepsLogs, addStepsLog } from "@/lib/data-service"
-import { CircularProgress } from "@/components/circular-progress"
 import { Footprints, Scale, TrendingUp } from "lucide-react"
+import { CircularProgress } from "@/components/circular-progress"
 
 export function UserStats() {
   const { user } = useAuth()
@@ -75,16 +75,13 @@ export function UserStats() {
   const stepsPercentage = Math.min(Math.round((todaySteps / 10000) * 100), 100)
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Scale className="mr-2 h-5 w-5 text-primary" />
+    <div className="grid gap-6 md:grid-cols-2">
+      <Card className="minimal-card">
+        <div className="p-6">
+          <h3 className="text-lg font-medium mb-4 flex items-center">
+            <Scale className="mr-2 h-5 w-5 text-[hsl(var(--chart-pink))]" />
             Weight Tracking
-          </CardTitle>
-          <CardDescription>Track your weight progress over time</CardDescription>
-        </CardHeader>
-        <CardContent>
+          </h3>
           {loading ? (
             <div className="flex justify-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
@@ -118,8 +115,11 @@ export function UserStats() {
                       value={newWeight}
                       onChange={(e) => setNewWeight(e.target.value)}
                       placeholder="Enter weight"
+                      className="minimal-input"
                     />
-                    <Button type="submit">Add</Button>
+                    <Button type="submit" className="minimal-button">
+                      Add
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -129,7 +129,7 @@ export function UserStats() {
                   <h4 className="text-sm font-medium mb-2">Recent Logs</h4>
                   <div className="space-y-2">
                     {weightLogs.slice(0, 5).map((log) => (
-                      <div key={log.id} className="flex justify-between text-sm">
+                      <div key={log.id} className="flex justify-between text-sm p-2 rounded bg-secondary/20">
                         <span>{new Date(log.date).toLocaleDateString()}</span>
                         <span className="font-medium">{log.weight} kg</span>
                       </div>
@@ -139,18 +139,15 @@ export function UserStats() {
               )}
             </>
           )}
-        </CardContent>
+        </div>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Footprints className="mr-2 h-5 w-5 text-primary" />
+      <Card className="minimal-card">
+        <div className="p-6">
+          <h3 className="text-lg font-medium mb-4 flex items-center">
+            <Footprints className="mr-2 h-5 w-5 text-[hsl(var(--chart-blue))]" />
             Steps Tracking
-          </CardTitle>
-          <CardDescription>Track your daily steps</CardDescription>
-        </CardHeader>
-        <CardContent>
+          </h3>
           {loading ? (
             <div className="flex justify-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
@@ -158,8 +155,17 @@ export function UserStats() {
           ) : (
             <>
               <div className="flex items-center justify-center mb-6">
-                <CircularProgress value={stepsPercentage} size={120} color="#10b981" />
-                <div className="absolute text-2xl font-bold">{todaySteps}</div>
+                <CircularProgress
+                  value={stepsPercentage}
+                  color="hsl(var(--chart-blue))"
+                  trailColor="hsl(var(--secondary))"
+                  showValue={false}
+                  size={120}
+                />
+                <div className="absolute flex flex-col items-center">
+                  <span className="text-3xl font-bold">{todaySteps}</span>
+                  <span className="text-xs text-muted-foreground">steps</span>
+                </div>
               </div>
               <div className="text-center text-sm text-muted-foreground mb-4">
                 {10000 - todaySteps > 0 ? `${10000 - todaySteps} steps to go` : "Daily goal achieved!"}
@@ -175,14 +181,17 @@ export function UserStats() {
                       value={newSteps}
                       onChange={(e) => setNewSteps(e.target.value)}
                       placeholder="Enter steps"
+                      className="minimal-input"
                     />
-                    <Button type="submit">Add</Button>
+                    <Button type="submit" className="minimal-button">
+                      Add
+                    </Button>
                   </div>
                 </div>
               </form>
             </>
           )}
-        </CardContent>
+        </div>
       </Card>
     </div>
   )

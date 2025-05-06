@@ -1,10 +1,16 @@
-import { Inter } from "next/font/google"
+import { Montserrat } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
 import { AuthProvider } from "@/components/auth-provider"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+// Configure the Montserrat font
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
+})
 
 export const metadata = {
   title: "FitFaat - Your Fitness Companion",
@@ -18,7 +24,7 @@ export default function RootLayout({ children }) {
   const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={montserrat.variable}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -46,12 +52,12 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <body className={montserrat.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            <div className="flex flex-col min-h-screen bg-background">
+            <div className="flex flex-col min-h-screen">
               <Navbar />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 overflow-auto p-4">{children}</main>
             </div>
           </AuthProvider>
         </ThemeProvider>

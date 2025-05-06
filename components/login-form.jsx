@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "./auth-provider"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dumbbell, AlertCircle } from "lucide-react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
+import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export function LoginForm() {
@@ -16,12 +17,17 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const { login, authError } = useAuth()
+  const [theme, setTheme] = useState("dark")
 
   // Show auth initialization errors
   useEffect(() => {
     if (authError) {
       setError(`Authentication system error: ${authError}. Using demo mode.`)
     }
+
+    // Check theme
+    const savedTheme = localStorage.getItem("theme") || "dark"
+    setTheme(savedTheme)
   }, [authError])
 
   const handleSubmit = async (e) => {
@@ -66,9 +72,19 @@ export function LoginForm() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Dumbbell className="h-12 w-12 text-primary" />
+            <div className="relative h-16 w-16">
+              <Image
+                src={theme === "dark" ? "/images/fitfaat-logo-yellow.png" : "/images/fitfaat-logo-black.png"}
+                alt="FitFaat Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
           </div>
-          <CardTitle className="text-3xl font-bold">FitFaat</CardTitle>
+          <div className="flex items-center justify-center mb-2">
+            <span className="text-3xl font-black">Fit </span>
+            <span className="text-3xl bengali-font">ফাট</span>
+          </div>
           <CardDescription className="text-lg">Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>

@@ -4,15 +4,15 @@ import { useEffect, useState } from "react"
 
 export function CircularProgress({
   value,
-  size = 100,
-  strokeWidth = 8,
-  color = "#06b6d4", // cyan-500
-  trailColor = "#1e293b", // slate-800
+  size = 120,
+  strokeWidth = 10,
+  color = "hsl(var(--primary))",
+  trailColor = "hsl(var(--secondary))",
   showValue = true,
   valueSize = 24,
   label,
   labelSize = 14,
-  labelColor = "#94a3b8", // slate-400
+  labelColor = "hsl(var(--muted-foreground))",
   animate = true,
   duration = 1000,
 }) {
@@ -47,6 +47,7 @@ export function CircularProgress({
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
+          className="progress-circle"
           style={{
             transition: animate ? `stroke-dashoffset ${duration}ms ease-in-out` : "none",
           }}
@@ -73,15 +74,15 @@ export function CircularProgress({
 
 export function MultiColorCircularProgress({
   value,
-  size = 100,
-  strokeWidth = 8,
-  colors = ["#06b6d4", "#8b5cf6", "#ec4899"], // cyan, violet, pink
-  trailColor = "#1e293b", // slate-800
+  size = 120,
+  strokeWidth = 10,
+  colors = ["hsl(var(--chart-blue))", "hsl(var(--chart-pink))"],
+  trailColor = "hsl(var(--secondary))",
   showValue = true,
   valueSize = 24,
   label,
   labelSize = 14,
-  labelColor = "#94a3b8", // slate-400
+  labelColor = "hsl(var(--muted-foreground))",
   animate = true,
   duration = 1000,
 }) {
@@ -126,6 +127,7 @@ export function MultiColorCircularProgress({
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
+          className="progress-circle"
           style={{
             transition: animate ? `stroke-dashoffset ${duration}ms ease-in-out` : "none",
           }}
@@ -136,76 +138,6 @@ export function MultiColorCircularProgress({
           className="absolute inset-0 flex flex-col items-center justify-center"
           style={{ transform: "rotate(0deg)" }}
         >
-          <span className="font-bold" style={{ fontSize: valueSize }}>
-            {Math.round(progress)}%
-          </span>
-          {label && (
-            <span style={{ fontSize: labelSize, color: labelColor }} className="mt-1">
-              {label}
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-export function DottedCircularProgress({
-  value,
-  size = 100,
-  dotSize = 5,
-  dotCount = 24,
-  color = "#06b6d4", // cyan-500
-  trailColor = "#1e293b", // slate-800
-  showValue = true,
-  valueSize = 24,
-  label,
-  labelSize = 14,
-  labelColor = "#94a3b8", // slate-400
-  animate = true,
-  duration = 1000,
-}) {
-  const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    if (animate) {
-      const timer = setTimeout(() => {
-        setProgress(value)
-      }, 100)
-      return () => clearTimeout(timer)
-    } else {
-      setProgress(value)
-    }
-  }, [value, animate])
-
-  const radius = (size - dotSize * 2) / 2
-  const activeDots = Math.round((progress / 100) * dotCount)
-
-  return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        {Array.from({ length: dotCount }).map((_, i) => {
-          const angle = (i / dotCount) * 360
-          const x = size / 2 + radius * Math.sin((angle * Math.PI) / 180)
-          const y = size / 2 - radius * Math.cos((angle * Math.PI) / 180)
-
-          return (
-            <circle
-              key={i}
-              cx={x}
-              cy={y}
-              r={dotSize}
-              fill={i < activeDots ? color : trailColor}
-              style={{
-                transition: animate ? `fill ${duration}ms ease-in-out` : "none",
-                transitionDelay: animate ? `${(i / dotCount) * duration}ms` : "0ms",
-              }}
-            />
-          )
-        })}
-      </svg>
-      {showValue && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-bold" style={{ fontSize: valueSize }}>
             {Math.round(progress)}%
           </span>

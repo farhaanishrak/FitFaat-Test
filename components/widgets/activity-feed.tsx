@@ -9,7 +9,7 @@ const activities = [
     title: "Completed chest workout",
     time: "2 hours ago",
     icon: Dumbbell,
-    iconColor: "text-orange-500",
+    iconColor: "text-[hsl(var(--chart-pink))]",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const activities = [
     description: "Oatmeal with fruits - 320 kcal",
     time: "5 hours ago",
     icon: Utensils,
-    iconColor: "text-green-500",
+    iconColor: "text-[hsl(var(--chart-yellow))]",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const activities = [
     description: "250ml",
     time: "6 hours ago",
     icon: Droplets,
-    iconColor: "text-blue-500",
+    iconColor: "text-[hsl(var(--chart-blue))]",
   },
   {
     id: 4,
@@ -35,7 +35,7 @@ const activities = [
     title: "Reached 5,000 steps",
     time: "Yesterday",
     icon: Footprints,
-    iconColor: "text-purple-500",
+    iconColor: "text-[hsl(var(--chart-blue))]",
   },
   {
     id: 5,
@@ -43,17 +43,17 @@ const activities = [
     title: "Completed daily goal",
     time: "Yesterday",
     icon: Check,
-    iconColor: "text-primary",
+    iconColor: "text-[hsl(var(--chart-yellow))]",
   },
 ]
 
 export function ActivityFeed() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {activities.map((activity) => (
         <div key={activity.id} className="flex">
           <div className="flex-none mr-4">
-            <div className={`rounded-full p-2 ${activity.iconColor} bg-muted`}>
+            <div className={`rounded-full p-2 ${activity.iconColor} bg-secondary/30`}>
               <activity.icon className="h-4 w-4" />
             </div>
           </div>

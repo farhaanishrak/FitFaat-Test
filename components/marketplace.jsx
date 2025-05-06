@@ -1,14 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Star, Search, ShoppingCart, Plus, Minus } from "lucide-react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Star, Search, ShoppingCart, Plus, Minus, Heart } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { toast } from "@/hooks/use-toast"
 
 const products = [
   {
@@ -267,6 +276,9 @@ export function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false)
+  const [newReview, setNewReview] = useState({ rating: 5, comment: "" })
+  const [cart, setCart] = useState([])
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
@@ -294,21 +306,46 @@ export function Marketplace() {
     }
   }
 
+  const handleAddReview = () => {
+    if (!selectedProduct || !newReview.comment) return
+
+    // In a real app, this would send the review to the database
+    // For now, we'll just close the dialog
+    setReviewDialogOpen(false)
+    setNewReview({ rating: 5, comment: "" })
+  }
+
+  const addToCart = (product, qty = 1) => {
+    const existingItem = cart.find((item) => item.id === product.id)
+
+    if (existingItem) {
+      setCart(cart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + qty } : item)))
+    } else {
+      setCart([...cart, { ...product, quantity: qty }])
+    }
+
+    toast({
+      title: "Added to cart",
+      description: `${qty} × ${product.name} added to your cart`,
+    })
+
+    if (selectedProduct) {
+      setSelectedProduct(null)
+    }
+  }
+
   const renderStars = (rating) => {
     return Array(5)
       .fill(0)
       .map((_, i) => (
-        <Star
-          key={i}
-          className={`h-4 w-4 ${i < Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
-        />
+        <Star key={i} className={`h-4 w-4 ${i < Math.floor(rating) ? "text-primary fill-primary" : "text-gray-300"}`} />
       ))
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Marketplace</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Marketplace</h1>
         <p className="text-muted-foreground">Browse and purchase fitness products and supplements.</p>
       </div>
 
@@ -323,7 +360,7 @@ export function Marketplace() {
           />
         </div>
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full md:w-auto">
-          <TabsList className="w-full md:w-auto">
+          <TabsList>
             {categories.map((category) => (
               <TabsTrigger key={category.id} value={category.id}>
                 {category.name}
@@ -333,32 +370,43 @@ export function Marketplace() {
         </Tabs>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {filteredProducts.map((product) => (
-          <Card key={product.id} className="overflow-hidden cursor-pointer" onClick={() => handleProductClick(product)}>
+          <Card key={product.id} className="product-card">
             <div className="aspect-square relative">
               <img
                 src={product.image || "/placeholder.svg"}
                 alt={product.name}
                 className="object-cover w-full h-full"
+                onClick={() => handleProductClick(product)}
               />
               <Badge className="absolute top-2 right-2">{product.category}</Badge>
+              <Button
+                size="icon"
+                className="absolute bottom-2 right-2 h-8 w-8 rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  addToCart(product)
+                }}
+              >
+                <ShoppingCart className="h-4 w-4" />
+              </Button>
             </div>
-            <CardHeader className="pb-2">
-              <CardTitle>{product.name}</CardTitle>
-              <CardDescription>${product.price.toFixed(2)}</CardDescription>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="flex items-center gap-2">
-                <div className="flex">{renderStars(product.rating)}</div>
-                <span className="text-sm text-muted-foreground">
-                  {product.rating} ({product.reviewCount} reviews)
-                </span>
+            <div className="p-3">
+              <h3
+                className="font-medium text-sm line-clamp-1 cursor-pointer"
+                onClick={() => handleProductClick(product)}
+              >
+                {product.name}
+              </h3>
+              <div className="flex items-center justify-between mt-1">
+                <div className="flex items-center gap-1">
+                  <div className="flex">{renderStars(product.rating)}</div>
+                  <span className="text-xs text-muted-foreground">{product.rating}</span>
+                </div>
+                <span className="font-medium text-sm">${product.price.toFixed(2)}</span>
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full">View Details</Button>
-            </CardFooter>
+            </div>
           </Card>
         ))}
       </div>
@@ -437,15 +485,25 @@ export function Marketplace() {
                       </Button>
                     </div>
                   </div>
-                  <Button className="w-full">
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart - ${(selectedProduct.price * quantity).toFixed(2)}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button className="flex-1" onClick={() => addToCart(selectedProduct, quantity)}>
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                    <Button variant="outline" size="icon">
+                      <Heart className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
             <div className="mt-6">
-              <h3 className="font-semibold mb-4">Reviews</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Reviews</h3>
+                <Button size="sm" onClick={() => setReviewDialogOpen(true)}>
+                  Add Review
+                </Button>
+              </div>
               <div className="space-y-4">
                 {selectedProduct.reviews.map((review) => (
                   <div key={review.id} className="border-t pt-4">
@@ -469,6 +527,54 @@ export function Marketplace() {
             </div>
           </DialogContent>
         )}
+      </Dialog>
+
+      {/* Add Review Dialog */}
+      <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Review</DialogTitle>
+            <DialogDescription>Share your experience with this product.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center justify-center">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    className="p-1"
+                    onClick={() => setNewReview({ ...newReview, rating: star })}
+                  >
+                    <Star
+                      className={`h-6 w-6 ${star <= newReview.rating ? "text-primary fill-primary" : "text-gray-300"}`}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="comment" className="text-sm font-medium">
+                Your Review
+              </label>
+              <Textarea
+                id="comment"
+                placeholder="Write your review here..."
+                rows={4}
+                value={newReview.comment}
+                onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setReviewDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleAddReview}>
+              Submit Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   )

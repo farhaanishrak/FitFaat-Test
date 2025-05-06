@@ -1,8 +1,7 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CircularProgress, MultiColorCircularProgress, DottedCircularProgress } from "@/components/circular-progress"
 import { CalorieWidget } from "@/components/widgets/calorie-widget"
 import { WaterIntakeWidget } from "@/components/widgets/water-intake-widget"
 import { WorkoutWidget } from "@/components/widgets/workout-widget"
@@ -11,82 +10,72 @@ import { WeightWidget } from "@/components/widgets/weight-widget"
 import { ActivityFeed } from "@/components/widgets/activity-feed"
 import { useAuth } from "@/components/auth-provider"
 import { UserStats } from "@/components/user-stats"
+import { CircularProgress, MultiColorCircularProgress } from "@/components/circular-progress"
 
 export function Dashboard() {
   const { user } = useAuth()
 
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back, {user?.name || "User"}! Here's an overview of your fitness journey.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome back, {user?.name || "User"}</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="bg-background/50 backdrop-blur">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value="overview" className="space-y-6">
           <UserStats />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Daily Goal Progress</CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center py-4">
-                <CircularProgress value={78} size={120} color="#10b981" label="Daily Goal" />
-              </CardContent>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-6 flex flex-col items-center justify-center border-blue-500/20">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Daily Goal Progress</div>
+              <CircularProgress value={78} color="hsl(var(--chart-blue))" trailColor="hsl(var(--secondary))" />
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Calories Burned</CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center py-4">
-                <MultiColorCircularProgress
-                  value={45}
-                  size={120}
-                  colors={["#06b6d4", "#8b5cf6", "#ec4899"]}
-                  label="Target: 1000 kcal"
-                />
-              </CardContent>
+            <Card className="bg-gradient-to-br from-pink-500/10 to-orange-500/10 p-6 flex flex-col items-center justify-center border-pink-500/20">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Calories Burned</div>
+              <MultiColorCircularProgress
+                value={45}
+                colors={["hsl(var(--chart-blue))", "hsl(var(--chart-pink))"]}
+                trailColor="hsl(var(--secondary))"
+                label="450 / 1000 kcal"
+                labelSize={12}
+              />
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Workout Streak</CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center py-4">
-                <CircularProgress value={100} size={120} color="#8b5cf6" label="7 days" showValue={false} />
-                <div className="absolute text-2xl font-bold">7</div>
-              </CardContent>
+            <Card className="bg-gradient-to-br from-green-500/10 to-teal-500/10 p-6 flex flex-col items-center justify-center border-green-500/20">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Workout Streak</div>
+              <CircularProgress
+                value={100}
+                color="hsl(var(--chart-pink))"
+                trailColor="hsl(var(--secondary))"
+                label="7 days"
+                labelSize={12}
+              />
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Water Intake</CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center py-4">
-                <DottedCircularProgress value={48} size={120} color="#06b6d4" label="1.2 / 2.5 L" />
-              </CardContent>
+            <Card className="bg-gradient-to-br from-yellow-500/10 to-amber-500/10 p-6 flex flex-col items-center justify-center border-yellow-500/20">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Water Intake</div>
+              <CircularProgress
+                value={48}
+                color="hsl(var(--chart-blue))"
+                trailColor="hsl(var(--secondary))"
+                label="1.2L / 2.5L"
+                labelSize={12}
+              />
             </Card>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle>Daily Activity</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+            <Card className="bg-gradient-to-br from-slate-500/5 to-slate-600/5 col-span-4 border-slate-500/10">
+              <div className="p-6">
+                <h3 className="text-lg font-medium mb-4">Daily Activity</h3>
                 <ActivityFeed />
-              </CardContent>
+              </div>
             </Card>
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Today's Widgets</CardTitle>
-                <CardDescription>Track your daily progress with these widgets</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <Card className="bg-gradient-to-br from-indigo-500/5 to-indigo-600/5 col-span-3 border-indigo-500/10">
+              <div className="p-6">
+                <h3 className="text-lg font-medium mb-4">Today's Widgets</h3>
                 <div className="grid gap-4">
                   <CalorieWidget />
                   <WaterIntakeWidget />
@@ -94,34 +83,28 @@ export function Dashboard() {
                   <StepCounterWidget />
                   <WeightWidget />
                 </div>
-              </CardContent>
+              </div>
             </Card>
           </div>
         </TabsContent>
-        <TabsContent value="analytics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analytics</CardTitle>
-              <CardDescription>View detailed analytics of your fitness journey</CardDescription>
-            </CardHeader>
-            <CardContent>
+        <TabsContent value="analytics" className="space-y-6">
+          <Card className="bg-gradient-to-br from-slate-500/5 to-slate-600/5 border-slate-500/10">
+            <div className="p-6">
+              <h3 className="text-lg font-medium mb-4">Analytics</h3>
               <div className="h-[400px] flex items-center justify-center border rounded-md">
                 <p className="text-muted-foreground">Analytics charts will appear here</p>
               </div>
-            </CardContent>
+            </div>
           </Card>
         </TabsContent>
-        <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Reports</CardTitle>
-              <CardDescription>View and download your fitness reports</CardDescription>
-            </CardHeader>
-            <CardContent>
+        <TabsContent value="reports" className="space-y-6">
+          <Card className="bg-gradient-to-br from-slate-500/5 to-slate-600/5 border-slate-500/10">
+            <div className="p-6">
+              <h3 className="text-lg font-medium mb-4">Reports</h3>
               <div className="h-[400px] flex items-center justify-center border rounded-md">
                 <p className="text-muted-foreground">Reports will appear here</p>
               </div>
-            </CardContent>
+            </div>
           </Card>
         </TabsContent>
       </Tabs>

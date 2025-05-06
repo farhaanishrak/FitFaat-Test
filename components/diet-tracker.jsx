@@ -217,17 +217,13 @@ export function DietTracker() {
         </Card>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-end">
         <Link href="/diet/bmi-calculator">
           <Button variant="outline" className="gap-2">
             <Calculator className="h-4 w-4" />
             BMI Calculator
           </Button>
         </Link>
-        <Button onClick={() => setActiveTab("calculator")} variant="outline" className="gap-2">
-          <Calculator className="h-4 w-4" />
-          Diet Calculator
-        </Button>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
